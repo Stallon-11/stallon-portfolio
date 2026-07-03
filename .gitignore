@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# Reflex compiled Next.js output
+.web/
+
 # Distribution / packaging
 .Python
 build/
