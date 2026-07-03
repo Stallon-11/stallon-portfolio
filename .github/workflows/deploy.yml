@@ -7,11 +7,6 @@ on:
     branches: ["main", "develop"]
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 jobs:
   test-code:
     runs-on: ubuntu-latest
@@ -28,20 +23,17 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest reflex
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Run Pytest Suite
         run: |
           pytest
 
-  deploy-frontend:
+  deploy-to-cloud:
     needs: test-code
+    # Only deploy if tests pass AND the push was to the main branch
     if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -53,18 +45,11 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install reflex
+          python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Export Static Frontend
+      - name: Deploy to Reflex Cloud
+        env:
+          REFLEX_TOKEN: ${{ secrets.REFLEX_TOKEN }}
         run: |
-          reflex export --frontend-only --no-zip
-
-      - name: Upload Artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ".web/build/client"
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          reflex deploy
