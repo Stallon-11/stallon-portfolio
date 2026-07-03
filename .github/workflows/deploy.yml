@@ -49,7 +49,5 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Deploy to Reflex Cloud
-        env:
-          REFLEX_TOKEN: ${{ secrets.REFLEX_TOKEN }}
         run: |
-          reflex deploy --project ${{ secrets.REFLEX_PROJECT_ID }} --app-id c9488366-4e58-4d19-a0e5-522452cc846e --no-interactive
+          reflex deploy --project ${{ secrets.REFLEX_PROJECT_ID }} --app-id c9488366-4e58-4d19-a0e5-522452cc846e --token ${{ secrets.REFLEX_TOKEN }} --no-interactive
