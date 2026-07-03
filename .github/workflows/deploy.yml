@@ -52,4 +52,4 @@ jobs:
         env:
           REFLEX_TOKEN: ${{ secrets.REFLEX_TOKEN }}
         run: |
-          reflex deploy --project ${{ secrets.REFLEX_PROJECT_ID }}
+          reflex deploy --project ${{ secrets.REFLEX_PROJECT_ID }} --app-id c9488366-4e58-4d19-a0e5-522452cc846e --no-interactive
